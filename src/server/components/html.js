@@ -1,33 +1,67 @@
 /* eslint-disable react/no-danger */
 /**
  * Module with the render html component.
- * @module src/server/components/html
+ * @module src/server/components/Html
  */
+// Node.
+import shortId from 'shortid';
+
 // React.
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 // App Config.
-import { MOUNT_ID } from '../../../config/config';
+import { MOUNT_ID } from '../../../config/';
 
+/**
+ * The HTML base component used in the server side rendering.
+ */
 class Html extends Component {
+  /**
+   * The component proptypes.
+   * @type {Object}
+   * @property {Function} assets -> The app assets paths.
+   * @property {Function} children -> The content of the app.
+   * @property {Function} perloadedState -> The pre-caculated state of the app.
+   */
   static propTypes = {
     assets: PropTypes.shape().isRequired,
     children: PropTypes.node.isRequired,
     preloadedState: PropTypes.string.isRequired
   };
 
+ /**
+  * Renders each style component of the assets.
+  * @param {Array} styles -> The app styles.
+  * @returns {Array} -> The array of link components.
+  */
   mapStyles = styles => (
-    Object.keys(styles).map((style, key) => (
-      <link key={key} rel="stylesheet" href={styles[style]} />
+    Object.keys(styles).map(style => (
+      <link
+        key={`style_${shortId.generate()}`}
+        rel="stylesheet" href={styles[style]}
+      />
     ))
   );
 
+  /**
+   * Renders each script component of the assets.
+   * @param {Array} scrips -> The app scripts.
+   * @returns {Array} -> The array of script components.
+   */
   mapScripts = scripts => (
-    Object.keys(scripts).map((script, key) => (
-      <script key={key} src={scripts[script]} />
+    Object.keys(scripts).map(script => (
+      <script
+        key={`script_${shortId.generate()}`}
+        src={scripts[script]}
+      />
     ))
   );
 
+  /**
+   * Renders the HTML component.
+   * @returns {ReactElement} -> The component.
+   */
   render() {
     const { assets, children, preloadedState } = this.props;
     return (

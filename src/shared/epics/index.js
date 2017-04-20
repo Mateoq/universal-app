@@ -5,12 +5,10 @@
 import { combineEpics } from 'redux-observable';
 
 // Epics.
-import loginEpic from './login-epic';
-import logoutEpic from './logout-epic';
+import hello from './hello';
 
 const rootEpic = combineEpics(
-  loginEpic,
-  logoutEpic,
+  hello
 );
 
 export default rootEpic;

@@ -1,7 +1,7 @@
 
 FROM node:boron
-MAINTAINER Dolce SAS
-LABEL Name=logistic-system-dolce Version=0.0.2 
+MAINTAINER Mateoq
+LABEL Name=universal-app Version=0.0.2 
 
 RUN npm install -g concurrently babel-cli
 

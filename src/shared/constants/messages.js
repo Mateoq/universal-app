@@ -13,4 +13,6 @@ export const DEV_SIGNAL = 'Webpack development server listening on port:';
 
 export const API_SIGNAL = 'API listening on port:';
 
-export const INVALID_USER = 'El usuario o contraseña son incorrectos.';
+export const EXTERNAL_SERVER_ERROR = 'External server error.';
+
+export const ARGS_ABSENCE = 'Not enough params.';

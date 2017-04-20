@@ -1,6 +1,11 @@
-yarn.lock
-server.json
 build
+doc
+
+# Yarn
+yarn.lock
+
+# Visual Studio Code
+.vscode
 
 # Test Reports
 # reports

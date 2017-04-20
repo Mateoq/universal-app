@@ -3,19 +3,20 @@ version: '2'
 
 services:
   logistic-system-dolce:
-    image: logistic-system-dolce:latest
+    image: universal-app:latest
     build:
       context: .
       dockerfile: Dockerfile
-    links: 
+    links:
       - db
     volumes:
       - .:/usr/src/app/
+      - /usr/src/app/build
       - /usr/src/app/node_modules
     environment:
       PORT: 3001
       NODE_ENV: production
-      MONGO_URL: mongodb://db:27017/logistic-system-dolce
+      MONGO_URL: mongodb://db:27017/universal-app
     ports:
       - 3001:3001
       - 3002:3002

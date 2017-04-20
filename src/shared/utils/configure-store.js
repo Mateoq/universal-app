@@ -11,46 +11,53 @@ import { persistState } from 'redux-devtools';
 // Containers.
 import { DevTools } from '../containers/';
 
-// Epics.
-import rootEpic from '../epics/';
-
 // App Config.
 import { env } from '../../../config/';
 
+// App.
+import reducer from '../reducers/';
+
 /**
  * Create a composed store.
+ * @param {Object} reducers -> The app reducer.
+ * @param {Object} rootEpic -> The app epics.
  * @param {Object} history -> Browser history.
- * @param {Object} reducers -> App reducer.
  * @param {Object} initialState -> The initial state of the app.
  * @returns {Object} -> Redux store.
  */
 const configureStore = (
-  history,
   reducers,
+  rootEpic,
+  history,
   initialState = {}
 ) => {
   // Middlewares.
-  const reduxRouterMiddleware = routerMiddleware(history);
   const epicMiddleware = createEpicMiddleware(rootEpic);
-  let enhancer = applyMiddleware(reduxRouterMiddleware, epicMiddleware);
+  let enhancer = applyMiddleware(epicMiddleware);
 
-  if (env.DEBUG && _CLIENT_) {
-    enhancer = compose(
-      applyMiddleware(reduxRouterMiddleware, epicMiddleware),
-      DevTools.instrument(),
-      persistState(
-        window.location.href.match(
-          /[?&]debug_session=([^&#]+)\b/
+  // Only the client will manage the router history.
+  if (_CLIENT_) {
+    const reduxRouterMiddleware = routerMiddleware(history);
+    enhancer = applyMiddleware(reduxRouterMiddleware, epicMiddleware);
+
+    if (env.DEBUG) {
+      enhancer = compose(
+        enhancer,
+        DevTools.instrument(),
+        persistState(
+          window.location.href.match(
+            /[?&]debug_session=([^&#]+)\b/
+          )
         )
-      )
-    );
+      );
+    }
   }
 
   const store = createStore(reducers, initialState, enhancer);
 
   if (env.DEBUG && module.hot) {
     module.hot.accept('../reducers', () => {
-      const nextReducers = require('../reducers').default; // eslint-disable-line global-require
+      const nextReducers = reducer;
       store.replaceReducer(nextReducers);
     });
   }

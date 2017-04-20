@@ -1,1 +1,1 @@
-export { default as DevTools } from './dev-tools'; // eslint-disable-line
+export { default as DevTools } from './DevTools'; // eslint-disable-line

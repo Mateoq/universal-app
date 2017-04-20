@@ -1,0 +1,9 @@
+@import "../utils/_colors.scss";
+
+.cp-check-box {
+  &--invalid {
+    box-shadow: 0px 0px 5px 1px $error-color;
+    border: 1px solid $error-color !important;
+    background-color: lighten($error-color, 90%) !important;
+  }
+}

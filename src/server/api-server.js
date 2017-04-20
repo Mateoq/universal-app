@@ -2,54 +2,42 @@
  * Module with the api server config.
  * @module src/server/api-server
  */
-import Express from 'express';
-import jwt from 'jsonwebtoken';
+// Node.
+import express from 'express';
+import bodyParser from 'body-parser';
 
 // App Config.
-import { env, TOKEN_SECRET } from '../../config/';
-
-// Middlewares.
-import sessionMiddleware from './middlewares/session-middleware';
-
-// Services.
-import { fetchUserRequest } from './api-services/';
+import { env } from '../../config/';
 
 // Utils.
-import { Log } from './utils/';
+import { serverCallback } from './utils/';
 
 // Constants.
-import * as responses from './constants/responses';
-import * as values from './constants/values';
-import * as messages from '../shared/constants/messages';
+import { API_SIGNAL } from '../shared/constants/messages';
+import { OK } from './constants/responses';
 
 
 // Express server.
-const app = new Express();
+const app = express();
 
 //
 // API Configuration.
 // -----------------------------------------------------------------------------
-
-// Setup session.
-sessionMiddleware(app);
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 //
 // API Services.
 // -----------------------------------------------------------------------------
-app.get('/api', (req, res) => {
-  res
-    .status(responses.OK)
-    .send('ok');
-});
 
+app.get('/api/hello', (req, res) => {
+  res.status(OK).send({ message: 'Hello' });
+});
 
 //
-// API Initialize.
+// API Initialization.
 // -----------------------------------------------------------------------------
-app.listen(env.API_PORT, (err) => {
-  if (err) {
-    Log.error(err);
-  } else {
-    Log.info(`${messages.API_SIGNAL} ${env.API_PORT}`);
-  }
-});
+app.listen(
+  env.API_PORT,
+  serverCallback(`${API_SIGNAL} ${env.API_PORT}`)
+);

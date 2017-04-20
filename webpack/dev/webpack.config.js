@@ -1,12 +1,13 @@
-const path = require('path');
 const webpack = require('webpack');
 const { Config } = require('webpack-config');
+
+const autoprefixer = require('autoprefixer');
 
 // Isomorphic Config.
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 const webpackIsomorphicToolsConfig = require('../webpack-isomorphic-tools-config');
 
-const { env, appName } = require('../../config/config');
+const { env, appName } = require('../../config/');
 const {
   CONTEXT_SRC,
   ASSETS_DIR
@@ -15,11 +16,18 @@ const {
 module.exports = Config()
   .extend('./webpack/webpack.config.common.js')
   .merge({
-    // The configuration for the server-side rendering
     context: CONTEXT_SRC,
     entry: {
       [appName]: [
-        `webpack-hot-middleware/client?path=http://${env.HOST}:${env.DEV_SERVER_PORT}/__webpack_hmr`,
+        // Activate HMR for React
+        'react-hot-loader/patch',
+        // Bundle the client for webpack-dev-server
+        // and connect to the provided endpoint
+        `webpack-dev-server/client?http://${env.HOST}:${env.DEV_SERVER_PORT}`,
+        // Bundle the client for hot reloading
+        // only- means to only hot reload for successful updates
+        'webpack/hot/only-dev-server',
+        // The entry point of the app
         './src/client/index.js'
       ]
     },
@@ -29,50 +37,48 @@ module.exports = Config()
       chunkFilename: '[name]-[hash].js',
       publicPath: `http://${env.HOST}:${env.DEV_SERVER_PORT}/assets/`
     },
+    devtool: 'inline-source-map',
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.js$/,
-          exclude: /(node_modules|bower_components|server)/,
-          loader: 'babel',
-          query: {
-            presets: ['es2016-node5', 'react', 'stage-0'],
-            plugins: ['transform-class-properties',
-              [
-                'react-transform', {
-                  transforms: [
-                    {
-                      transform: 'react-transform-catch-errors',
-                      imports: ['react', 'redbox-react']
-                    },
-                    {
-                      transform: 'react-transform-hmr',
-                      imports: ['react'],
-                      locals: ['module']
-                    }
-                  ]
-                }
-              ]
-            ]
+          exclude: /(node_modules|server)/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: [['latest', { modules: false }], 'react', 'stage-3'],
+              plugins: ['react-hot-loader/babel', 'transform-class-properties']
+            }
           }
         },
         {
           test: /\.scss$/,
-          loaders: [
-            'style',
-            'css?importLoaders=2&sourceMap',
-            'postcss',
-            'sass?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 2,
+                sourceMap: true
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: [autoprefixer]
+              }
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                outputStyle: 'expanded',
+                sourceMap: true,
+                sourceMapContents: true
+              }
+            }
           ],
           exclude: /node_modules/
         }
-      ]
-    },
-    progress: true,
-    resolve: {
-      root: [
-        path.resolve('src'),
-        path.resolve('node_modules')
       ]
     },
     plugins: [
@@ -86,8 +92,10 @@ module.exports = Config()
         __DEVELOPMENT__: true,
         __DEVTOOLS__: true  // enable/disable redux-devtools
       }),
-      new webpack.optimize.OccurenceOrderPlugin(),
+      // Enable HMR globally.
       new webpack.HotModuleReplacementPlugin(),
+      // Prints more readable module names in the browser console on HMR updates.
+      new webpack.NamedModulesPlugin(),
       new WebpackIsomorphicToolsPlugin(
         webpackIsomorphicToolsConfig
       ).development()

@@ -3,4 +3,14 @@
  * @module src/shared/constants/routes
  */
 
-export const DASHBOARD = '/';
+/**
+ * The Home route.
+ * @type {String}
+ */
+export const HOME = '/';
+
+/**
+ * The About route.
+ * @type {String}
+ */
+export const ABOUT = '/about';

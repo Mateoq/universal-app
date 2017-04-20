@@ -2,6 +2,7 @@
  * Module with the express server config.
  * @module src/server/server
  */
+// Node.
 import Express from 'express';
 import { Server } from 'http';
 import compression from 'compression';
@@ -10,7 +11,7 @@ import compression from 'compression';
 import { env } from '../../config/';
 
 // Utils.
-import { Log } from './utils/';
+import { serverCallback } from './utils/';
 
 // Constants.
 import { SIGNAL } from '../shared/constants/messages';
@@ -18,12 +19,12 @@ import { SIGNAL } from '../shared/constants/messages';
 // Middlewares.
 import * as middlewares from './middlewares/';
 
-// Express server
+// Express server.
 const app = new Express();
 const server = new Server(app);
 
 //
-// Express Configuration
+// Express Configuration.
 // -----------------------------------------------------------------------------
 
 // Compression.
@@ -35,23 +36,19 @@ if (!env.DEBUG) {
 global._CLIENT_ = false;
 
 // Middlewares.
+// ====================================
 
 // I. Static Assets.
 middlewares.staticMiddleware(app);
-// II. Session.
-middlewares.sessionMiddleware(app);
-// III. API Proxy.
+// II. API Proxy.
 middlewares.apiMiddleware(app, server);
-// IV. Render.
+// III. Render.
 middlewares.renderMiddleware(app);
 
 //
-// Initialise Express
+// Initialize Express.
 // -----------------------------------------------------------------------------
-server.listen(env.SERVER_PORT, (err) => {
-  if (err) {
-    Log.error(err);
-  } else {
-    Log.log(`${SIGNAL} http://${env.HOST}:${env.SERVER_PORT}`);
-  }
-});
+server.listen(
+  env.SERVER_PORT,
+  serverCallback(`${SIGNAL} http://${env.HOST}:${env.SERVER_PORT}`)
+);

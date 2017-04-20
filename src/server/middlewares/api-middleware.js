@@ -6,10 +6,10 @@
 import httpProxy from 'http-proxy';
 
 // Utils.
-import { Log } from '../../shared/utils/';
+import { Log } from '../utils/';
 
 // App Config.
-import { env } from '../../../config/config';
+import { env } from '../../../config/';
 
 const API_URL = `http://${env.HOST}:${env.API_PORT}`;
 

@@ -2,8 +2,8 @@ const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 
 module.exports = {
   debug: true,
-  webpack_assets_file_path: '../build/webpack-assets.json',
-  webpack_stats_file_path: '../build/webpack-stats.json',
+  webpack_assets_file_path: './build/webpack-assets.json',
+  webpack_stats_file_path: './build/webpack-stats.json',
   assets: {
     images: {
       extensions: [
@@ -40,6 +40,7 @@ module.exports = {
         }
         return regex.test(module.name);
       },
+      // path: WebpackIsomorphicToolsPlugin.style_loader_path_extractor,
       path(module, options, log) {
         if (options.development) {
           return WebpackIsomorphicToolsPlugin.style_loader_path_extractor(
@@ -51,6 +52,7 @@ module.exports = {
 
         return module.name;
       },
+      // parser: WebpackIsomorphicToolsPlugin.css_loader_parser,
       parser(module, options, log) {
         if (options.development) {
           return WebpackIsomorphicToolsPlugin.css_modules_loader_parser(

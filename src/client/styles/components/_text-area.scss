@@ -1,0 +1,8 @@
+@import "../utils/_colors.scss";
+
+.cp-text-area {
+  &--invalid {
+    border: 1px solid $error-color !important;
+    background-color: lighten($error-color, 90%) !important;
+  }
+}
