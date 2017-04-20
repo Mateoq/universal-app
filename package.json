@@ -1,6 +1,6 @@
 {
-  "name": "universal-app",
-  "version": "0.0.2",
+  "name": "universal-react-app",
+  "version": "0.1.0",
   "description": "Simple system to manage all orders based on the zones",
   "main": "./src/server/index.js",
   "scripts": {
