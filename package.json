@@ -1,6 +1,6 @@
 {
   "name": "universal-react-app",
-  "version": "0.0.2",
+  "version": "0.2.0",
   "description": "Boilerplate to create universal apps with node and react",
   "main": "./src/server/index.js",
   "scripts": {
